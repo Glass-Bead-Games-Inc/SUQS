@@ -31,7 +31,7 @@ class SUQS_API USuqsWaypointComponent : public USceneComponent
 {
 	GENERATED_BODY()
 
-protected:
+public:
 	/// The ID of the quest this waypoint belongs to (required)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, BlueprintGetter=GetQuestID, Category="Waypoint")
 	FName QuestID;
@@ -44,7 +44,8 @@ protected:
 	/// You may wish to SetEnabled(false) on waypoints that are no longer relevant
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, BlueprintGetter=GetSequenceIndex, Category="Waypoint")
 	uint8 SequenceIndex = 0;
-	
+
+protected:
 	/// Whether this waypoint is currently enabled
 	UPROPERTY(EditAnywhere, BlueprintSetter=SetEnabled, SaveGame, BlueprintGetter=IsEnabled, Category="Waypoint")
 	bool bEnabled = true;

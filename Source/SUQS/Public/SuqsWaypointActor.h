@@ -15,7 +15,7 @@ class SUQS_API ASuqsWaypointActorBase : public AActor
 {
 	GENERATED_BODY()
 
-protected:
+public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame)
 	USuqsWaypointComponent* WaypointComponent;
 
