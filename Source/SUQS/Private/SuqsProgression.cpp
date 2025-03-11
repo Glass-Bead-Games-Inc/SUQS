@@ -15,16 +15,63 @@
 #define SuqsCurrentDataVersion 1
 
 //PRAGMA_DISABLE_OPTIMIZATION
-void USuqsProgression::InitWithQuestDataTables(TArray<UDataTable*> Tables)
-{
-	QuestDataTables = Tables;
-	RebuildAllQuestData();
+void USuqsProgression::InitWithQuestDataTables(TArray<UDataTable*> Tables) {
+  QuestDataTables = Tables;
+  RebuildAllQuestData();
+}
+
+void USuqsProgression::AddQuestDataTables(TArray<UDataTable*> Tables) {
+  for (auto Table : Tables)
+  {
+    AddQuestDataTable(Table);
+    QuestDataTables.Add(Table);
+  }
+
+  const auto GI = UGameplayStatics::GetGameInstance(this);
+  if (IsValid(GI)) {
+    auto WaypointsSubSys = GI->GetSubsystem<USuqsWaypointSubsystem>();
+    WaypointsSubSys->SetProgression(this);
+  }
+}
+
+void USuqsProgression::AddQuestDataTable(UDataTable* Table) {
+  UE_LOG(LogSUQS, Verbose, TEXT("Loading quest definitions from %s"), *Table->GetName());
+  Table->ForeachRow<FSuqsQuest>("", [this, Table](const FName& Key, const FSuqsQuest& Quest) {
+    if (QuestDefinitions.Contains(Quest.Identifier))
+      UE_LOG(LogSUQS, Error,
+             TEXT("Quest ID '%s' has been used more than once! Duplicate entry was in %s"),
+             *Quest.Identifier.ToString(), *Table->GetName());
+
+    // Check task IDs are unique
+    TSet<FName> TaskIDSet;
+    for (auto& Objective : Quest.Objectives) {
+      for (auto& Task : Objective.Tasks) {
+        bool bDuplicate;
+        TaskIDSet.Add(Task.Identifier, &bDuplicate);
+        if (bDuplicate)
+          UE_LOG(LogSUQS, Error,
+                 TEXT("Task ID '%s' has been used more than once! Duplicate entry title: %s"),
+                 *Task.Identifier.ToString(), *Task.Title.ToString());
+      }
+    }
+
+    QuestDefinitions.Add(Quest.Identifier, Quest);
+
+    // Record dependencies
+    if (Quest.AutoAccept) {
+      for (auto& CompletedQuest : Quest.PrerequisiteQuests) {
+        QuestCompletionDeps.Add(CompletedQuest, Quest.Identifier);
+      }
+      for (auto& FailedQuest : Quest.PrerequisiteQuestFailures) {
+        QuestFailureDeps.Add(FailedQuest, Quest.Identifier);
+      }
+    }
+  });
 }
 
 void USuqsProgression::InitWithQuestDataTablesInPath(const FString& Path)
 {
 	InitWithQuestDataTablesInPaths(TArray<FString> { Path });
-	
 }
 
 void USuqsProgression::InitWithQuestDataTablesInPaths(const TArray<FString>& Paths)
@@ -56,64 +103,26 @@ void USuqsProgression::SetDefaultProgressionTimeDelays(float QuestDelay, float T
 }
 
 
-void USuqsProgression::RebuildAllQuestData()
-{
-	QuestDefinitions.Empty();
-	QuestCompletionDeps.Empty();
-	QuestFailureDeps.Empty();
-	ActiveQuests.Empty();
-	QuestArchive.Empty();
-	GlobalActiveBranches.Empty();
-	
-	// Build unified quest table
-	if (QuestDataTables.Num() > 0)
-	{
-		for (auto Table : QuestDataTables)
-		{
-			UE_LOG(LogSUQS, Verbose, TEXT("Loading quest definitions from %s"), *Table->GetName());
-			Table->ForeachRow<FSuqsQuest>("", [this, Table](const FName& Key, const FSuqsQuest& Quest)
-            {
-                if (QuestDefinitions.Contains(Quest.Identifier))
-                	UE_LOG(LogSUQS, Error, TEXT("Quest ID '%s' has been used more than once! Duplicate entry was in %s"), *Quest.Identifier.ToString(), *Table->GetName());
+void USuqsProgression::RebuildAllQuestData() {
+  QuestDefinitions.Empty();
+  QuestCompletionDeps.Empty();
+  QuestFailureDeps.Empty();
+  ActiveQuests.Empty();
+  QuestArchive.Empty();
+  GlobalActiveBranches.Empty();
 
-                // Check task IDs are unique
-                TSet<FName> TaskIDSet;
-                for (auto& Objective : Quest.Objectives)
-                {
-                    for (auto& Task : Objective.Tasks)
-                    {
-                        bool bDuplicate;
-                        TaskIDSet.Add(Task.Identifier, &bDuplicate);
-                        if (bDuplicate)
-                        	UE_LOG(LogSUQS, Error, TEXT("Task ID '%s' has been used more than once! Duplicate entry title: %s"), *Task.Identifier.ToString(), *Task.Title.ToString());
-                    }
-                }
-				
-                QuestDefinitions.Add(Quest.Identifier, Quest);
+  // Build unified quest table
+  if (QuestDataTables.Num() > 0) {
+    for (auto Table : QuestDataTables) {
+      AddQuestDataTable(Table);
+    }
+  }
 
-				// Record dependencies
-				if (Quest.AutoAccept)
-				{
-					for (auto& CompletedQuest : Quest.PrerequisiteQuests)
-					{
-                        QuestCompletionDeps.Add(CompletedQuest, Quest.Identifier);
-                    }
-                    for (auto& FailedQuest : Quest.PrerequisiteQuestFailures)
-                    {
-                        QuestFailureDeps.Add(FailedQuest, Quest.Identifier);
-                    }
-				}
-            });
-		}
-	}
-
-	const auto GI = UGameplayStatics::GetGameInstance(this);
-	if (IsValid(GI))
-	{
-		auto WaypointsSubSys = GI->GetSubsystem<USuqsWaypointSubsystem>();
-		WaypointsSubSys->SetProgression(this);
-	}
-	
+  const auto GI = UGameplayStatics::GetGameInstance(this);
+  if (IsValid(GI)) {
+    auto WaypointsSubSys = GI->GetSubsystem<USuqsWaypointSubsystem>();
+    WaypointsSubSys->SetProgression(this);
+  }
 }
 
 const TMap<FName, FSuqsQuest>& USuqsProgression::GetQuestDefinitions(bool bForceRebuild)
