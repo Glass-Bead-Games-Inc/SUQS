@@ -13,7 +13,7 @@ void USuqsWaypointSubsystem::RegisterWaypoint(USuqsWaypointComponent* Waypoint) 
     const auto Curr = List[i];
 
     // Avoid duplicates
-    if (Curr == Waypoint) bInserted = true;
+    if (Curr == Waypoint) { bInserted = true; }
 
     if (Curr->GetTaskID() == Waypoint->GetTaskID()) { bExistingTask = true; }
 
@@ -21,8 +21,8 @@ void USuqsWaypointSubsystem::RegisterWaypoint(USuqsWaypointComponent* Waypoint) 
     // Insert here if we're now on a diff task (thus, group)
     //  or if we're on the same task and our sequence index is before this one
     if (bExistingTask &&
-        (Curr->GetSequenceIndex() > Waypoint->GetSequenceIndex() ||
-         Curr->GetTaskID() != Waypoint->GetTaskID())) {
+      (Curr->GetSequenceIndex() > Waypoint->GetSequenceIndex() ||
+        Curr->GetTaskID() != Waypoint->GetTaskID())) {
       List.Insert(Waypoint, i);
       bInserted = true;
       break;
@@ -106,13 +106,15 @@ bool USuqsWaypointSubsystem::GetWaypoints(const FName& QuestID, const FName& Tas
 }
 
 void USuqsWaypointSubsystem::SetProgression(USuqsProgression* Prog) {
-  if (IsValid(Prog))
+  if (IsValid(Prog)) {
     Prog->OnProgressionLoaded.RemoveDynamic(this, &USuqsWaypointSubsystem::OnProgressionLoaded);
+  }
 
   Progression = Prog;
 
-  if (IsValid(Prog))
+  if (IsValid(Prog)) {
     Prog->OnProgressionLoaded.AddDynamic(this, &USuqsWaypointSubsystem::OnProgressionLoaded);
+  }
 }
 
 void USuqsWaypointSubsystem::OnProgressionLoaded(USuqsProgression* Prog) {

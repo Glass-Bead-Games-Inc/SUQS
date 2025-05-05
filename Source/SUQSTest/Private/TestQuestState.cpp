@@ -8,8 +8,8 @@
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestAcceptSimple, "SUQSTest.QuestAcceptSimple",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestAcceptSimple::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -46,8 +46,8 @@ bool FTestQuestAcceptSimple::RunTest(const FString& Parameters) {
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestAcceptFailedComplete,
                                  "SUQSTest.QuestAcceptFailedComplete",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestAcceptFailedComplete::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -95,8 +95,8 @@ bool FTestQuestAcceptFailedComplete::RunTest(const FString& Parameters) {
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestReset, "SUQSTest.QuestReset",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestReset::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -112,7 +112,7 @@ bool FTestQuestReset::RunTest(const FString& Parameters) {
   TestNotNull("Current Objective should be valid", Obj);
   TestEqual("O1 objective should be current", Obj->GetIdentifier(), FName("O1"));
   TestEqual("O1 objective should be not started", Obj->GetStatus(),
-            ESuqsObjectiveStatus::NotStarted);
+            ESuqsObjectiveStatus::Inactive);
 
   // Complete first task via top-level API
   TestTrue("Task should complete OK", Progression->CompleteTask("Q_Main1", "T_ReachThePlace"));
@@ -123,7 +123,7 @@ bool FTestQuestReset::RunTest(const FString& Parameters) {
   TestNotNull("Current Objective should be valid", Obj);
   TestEqual("O1 objective should be current", Obj->GetIdentifier(), FName("O1"));
   TestEqual("O1 objective should be in progress", Obj->GetStatus(),
-            ESuqsObjectiveStatus::InProgress);
+            ESuqsObjectiveStatus::Active);
 
   auto Tasks = Obj->GetTasks();
   TestEqual("Should be correct number of tasks", Tasks.Num(), 3);
@@ -143,12 +143,12 @@ bool FTestQuestReset::RunTest(const FString& Parameters) {
   TestNotNull("Current Objective should be valid", Obj);
   TestEqual("O2 objective should be current", Obj->GetIdentifier(), FName("O2"));
   TestEqual("O2 objective should be not started", Obj->GetStatus(),
-            ESuqsObjectiveStatus::NotStarted);
+            ESuqsObjectiveStatus::Inactive);
 
   // We'll complete one task of the objective
   TestTrue("Task should complete", Obj->GetTasks()[0]->Complete());
   TestEqual("O2 objective should now be in progress", Obj->GetStatus(),
-            ESuqsObjectiveStatus::InProgress);
+            ESuqsObjectiveStatus::Active);
   TestEqual("O2 first task should be done", Obj->GetTasks()[0]->GetStatus(),
             ESuqsTaskStatus::Completed);
 
@@ -159,7 +159,7 @@ bool FTestQuestReset::RunTest(const FString& Parameters) {
   TestNotNull("Current Objective should be valid", Obj);
   TestEqual("O1 objective should be current again after reset", Obj->GetIdentifier(), FName("O1"));
   TestEqual("O1 objective should be not started again", Obj->GetStatus(),
-            ESuqsObjectiveStatus::NotStarted);
+            ESuqsObjectiveStatus::Inactive);
   Tasks = Obj->GetTasks();
   TestEqual("First task should be not started", Tasks[0]->GetStatus(), ESuqsTaskStatus::NotStarted);
   TestEqual("Second task should be not started", Tasks[1]->GetStatus(),
@@ -167,7 +167,7 @@ bool FTestQuestReset::RunTest(const FString& Parameters) {
   TestEqual("Third task should be not started", Tasks[2]->GetStatus(), ESuqsTaskStatus::NotStarted);
 
   TestEqual("O2 objective should be not started again", Q->GetObjectives()[1]->GetStatus(),
-            ESuqsObjectiveStatus::NotStarted);
+            ESuqsObjectiveStatus::Inactive);
   TestEqual("O2 first task should be not started again", Obj->GetTasks()[0]->GetStatus(),
             ESuqsTaskStatus::NotStarted);
 
@@ -177,8 +177,8 @@ bool FTestQuestReset::RunTest(const FString& Parameters) {
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestOrderedTasks, "SUQSTest.QuestOrderedTasks",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestOrderedTasks::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -226,8 +226,8 @@ bool FTestQuestOrderedTasks::RunTest(const FString& Parameters) {
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestUnorderedTasks, "SUQSTest.QuestUnorderedTasks",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestUnorderedTasks::RunTest(const FString& Parameters) {
 
@@ -250,8 +250,8 @@ bool FTestQuestUnorderedTasks::RunTest(const FString& Parameters) {
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestAny2OfTasks, "SUQSTest.QuestAny2OfTasks",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestAny2OfTasks::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -301,8 +301,8 @@ bool FTestQuestAny2OfTasks::RunTest(const FString& Parameters) {
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestTargetNumber, "SUQSTest.QuestTargetNumber",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestTargetNumber::RunTest(const FString& Parameters) {
 
@@ -368,8 +368,8 @@ bool FTestTargetNumber::RunTest(const FString& Parameters) {
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestMultiObjective, "SUQSTest.QuestMultiObjective",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestMultiObjective::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -402,12 +402,13 @@ bool FTestMultiObjective::RunTest(const FString& Parameters) {
   for (int i = 0; i < 2; ++i) {
     TestTrue("Task should complete", Progression->CompleteTask("Q_Main1", TaskIDs[i]));
     TestTrue("Task should report completed", Progression->IsTaskCompleted("Q_Main1", TaskIDs[i]));
-    if (i < 1)
+    if (i < 1) {
       TestTrue("Objective 1 should be incomplete",
                Progression->IsObjectiveIncomplete("Q_Main1", "O1"));
-    else
+    } else {
       TestTrue("Objective 1 should be completed even though optional wasn't",
                Progression->IsObjectiveCompleted("Q_Main1", "O1"));
+    }
   }
   TestTrue("Quest should be incomplete", Progression->IsQuestIncomplete("Q_Main1"));
   TestTrue("Objective 2 should be incomplete", Progression->IsObjectiveIncomplete("Q_Main1", "O2"));
@@ -415,12 +416,13 @@ bool FTestMultiObjective::RunTest(const FString& Parameters) {
   for (int i = 3; i < 5; ++i) {
     TestTrue("Task should complete", Progression->CompleteTask("Q_Main1", TaskIDs[i]));
     TestTrue("Task should report completed", Progression->IsTaskCompleted("Q_Main1", TaskIDs[i]));
-    if (i < 4)
+    if (i < 4) {
       TestTrue("Objective 2 should be incomplete",
                Progression->IsObjectiveIncomplete("Q_Main1", "O2"));
-    else
+    } else {
       TestTrue("Objective 2 should be completed",
                Progression->IsObjectiveCompleted("Q_Main1", "O2"));
+    }
   }
   TestTrue("Quest should be incomplete", Progression->IsQuestIncomplete("Q_Main1"));
   TestTrue("Objective 3 should be incomplete", Progression->IsObjectiveIncomplete("Q_Main1", "O3"));
@@ -436,8 +438,8 @@ bool FTestMultiObjective::RunTest(const FString& Parameters) {
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestDescriptions, "SUQSTest.QuestDescriptions",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestDescriptions::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -526,8 +528,8 @@ const FString ContinueOnFailJson = R"RAWJSON([
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestContinueOnFailObjective, "SUQSTest.ContinueOnFailObjective",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestContinueOnFailObjective::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();

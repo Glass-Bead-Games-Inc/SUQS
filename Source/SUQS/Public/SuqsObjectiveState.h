@@ -9,14 +9,14 @@
 
 UENUM(BlueprintType)
 enum class ESuqsObjectiveStatus : uint8 {
-  /// No progress has been made
-  NotStarted = 0,
-  /// At least one element of progress has been made
-  InProgress = 4,
-  /// All mandatory elements have been completed
-  Completed = 8,
-  /// This item has been failed and cannot be progressed without being explicitly reset
-  Failed = 20
+  /// The quest system has not yet activated this objective
+  Inactive = 0,
+  /// The objective is active and tasks may be in progress
+  Active = 1,
+  /// All required tasks are completed
+  Completed = 2,
+  /// The objective has failed and is no longer completable
+  Failed = 3
 };
 
 /**
@@ -31,7 +31,7 @@ class SUQS_API USuqsObjectiveState : public UObject {
 protected:
   /// Whether this objective has been started, completed, failed (quick access to looking at tasks)
   UPROPERTY(BlueprintReadOnly, Category = "Objective Status")
-  ESuqsObjectiveStatus Status = ESuqsObjectiveStatus::NotStarted;
+  ESuqsObjectiveStatus Status = ESuqsObjectiveStatus::Inactive;
 
   /// List of detailed task status
   UPROPERTY(BlueprintReadOnly, Category = "Objective Status")
@@ -59,22 +59,30 @@ public:
   /// Objective identifier, which may be blank
   UFUNCTION(BlueprintCallable, BlueprintPure)
   const FName& GetIdentifier() const { return ObjectiveDefinition->Identifier; }
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   const FText& GetTitle() const { return ObjectiveDefinition->Title; }
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   USuqsQuestState* GetParentQuest() const { return ParentQuest.Get(); }
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   USuqsProgression* GetRootProgression() const { return Progression.Get(); }
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   const FName& GetBranch() const { return ObjectiveDefinition->Branch; }
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool AreTasksSequential() const { return ObjectiveDefinition->bSequentialTasks; }
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool AreAllMandatoryTasksRequired() const {
     return ObjectiveDefinition->NumberOfMandatoryTasksRequired == -1;
   }
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   int NumberOfMandatoryTasksRequired() const { return MandatoryTasksNeededToComplete; }
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool GetContinueOnFail() { return ObjectiveDefinition->bContinueOnFail; }
 
@@ -86,9 +94,11 @@ public:
   bool IsIncomplete() const {
     return Status != ESuqsObjectiveStatus::Completed && Status != ESuqsObjectiveStatus::Failed;
   }
+
   /// Return whether an objective is completed
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool IsCompleted() const { return Status == ESuqsObjectiveStatus::Completed; }
+
   /// Return whether an objective is failed
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool IsFailed() const { return Status == ESuqsObjectiveStatus::Failed; }
@@ -132,6 +142,9 @@ public:
   UFUNCTION(BlueprintCallable)
   bool IsOnActiveBranch() const;
 
+  // Check if current objective is active.
+  UFUNCTION(BlueprintCallable)
+  bool IsCurrentObjective() const;
 
   void NotifyTaskStatusChanged(const USuqsTaskState* ChangedTaskOrNull);
   void NotifyGateOpened(const FName& GateName);

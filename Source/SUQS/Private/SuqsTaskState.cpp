@@ -31,12 +31,12 @@ void USuqsTaskState::Tick(float DeltaTime) {
 }
 
 FText USuqsTaskState::GetTitle() const {
-  if (bTitleNeedsFormatting)
+  if (bTitleNeedsFormatting) {
     return GetRootProgression()->FormatTaskText(
         GetParentObjective()->GetParentQuest()->GetIdentifier(), GetIdentifier(),
         TaskDefinition->Title);
-  else
-    return TaskDefinition->Title;
+  }
+  return TaskDefinition->Title;
 }
 
 void USuqsTaskState::SetTimeRemaining(float T) {
@@ -82,9 +82,7 @@ void USuqsTaskState::QueueParentStatusChangeNotification(bool bIgnoreBarriers) {
   if (bIgnoreBarriers) {
     ResolveBarrier = FSuqsResolveBarrier();
     ResolveBarrier.bPending = true;
-  } else {
-    ResolveBarrier = Progression->GetResolveBarrierForTask(TaskDefinition, Status);
-  }
+  } else { ResolveBarrier = Progression->GetResolveBarrierForTask(TaskDefinition, Status); }
 
   MaybeNotifyParentStatusChange();
 }
@@ -95,7 +93,7 @@ bool USuqsTaskState::IsResolveBlockedOn(ESuqsResolveBarrierCondition Barrier) co
 
 void USuqsTaskState::MaybeNotifyParentStatusChange() {
   // Early-out if barrier has already been processed so we only do this once per status change
-  if (!ResolveBarrier.bPending) return;
+  if (!ResolveBarrier.bPending) { return; }
 
   // Assume cleared
   bool bCleared = true;
@@ -169,10 +167,9 @@ void USuqsTaskState::SetNumber(int N) {
   if (PrevNumber != Number) {
     Progression->RaiseTaskUpdated(this);
 
-    if (Number == TaskDefinition->TargetNumber)
-      Complete();
-    else
+    if (Number == TaskDefinition->TargetNumber) { Complete(); } else {
       ChangeStatus(Number > 0 ? ESuqsTaskStatus::InProgress : ESuqsTaskStatus::NotStarted);
+    }
   }
 }
 
@@ -188,7 +185,7 @@ void USuqsTaskState::Reset() {
   ChangeStatus(ESuqsTaskStatus::NotStarted);
 
   // There isn't an event for change status back to not started
-  if (bRaiseUpdate) Progression->RaiseTaskUpdated(this);
+  if (bRaiseUpdate) { Progression->RaiseTaskUpdated(this); }
 }
 
 bool USuqsTaskState::IsResolveBlocked() const {
@@ -196,8 +193,9 @@ bool USuqsTaskState::IsResolveBlocked() const {
 }
 
 void USuqsTaskState::NotifyGateOpened(const FName& GateName) {
-  if (IsResolveBlockedOn(ESuqsResolveBarrierCondition::Gate) && ResolveBarrier.Gate == GateName)
+  if (IsResolveBlockedOn(ESuqsResolveBarrierCondition::Gate) && ResolveBarrier.Gate == GateName) {
     MaybeNotifyParentStatusChange();
+  }
 }
 
 bool USuqsTaskState::IsHiddenOnCompleteOrFail() const {
@@ -240,9 +238,7 @@ void USuqsTaskState::FinishLoad() {
   // Derive hidden from other state, since it's not saved
   bHidden = false;
   if (IsMandatory()) {
-    if (IsHiddenOnCompleteOrFail() && (IsCompleted() || IsFailed())) {
-      bHidden = true;
-    } else {
+    if (IsHiddenOnCompleteOrFail() && (IsCompleted() || IsFailed())) { bHidden = true; } else {
       // If incomplete, then this is hidden if objective is set to sequential tasks and this isn't
       // the next one
       auto Obj = GetParentObjective();

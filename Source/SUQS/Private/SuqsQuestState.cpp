@@ -31,9 +31,7 @@ void USuqsQuestState::Initialise(const FSuqsQuest* Def, USuqsProgression* Root) 
     Obj->Initialise(&ObjDef, this, Root);
     Objectives.Add(Obj);
 
-    for (auto Task : Obj->Tasks) {
-      FastTaskLookup.Add(Task->GetIdentifier(), Task);
-    }
+    for (auto Task : Obj->Tasks) { FastTaskLookup.Add(Task->GetIdentifier(), Task); }
   }
   ResetBranches();
 
@@ -57,13 +55,13 @@ void USuqsQuestState::Tick(float DeltaTime) {
 
 USuqsTaskState* USuqsQuestState::GetTask(const FName& Identifier) const {
   const auto ppT = FastTaskLookup.Find(Identifier);
-  if (ppT) return *ppT;
+  if (ppT) { return *ppT; }
   return nullptr;
 }
 
 
 void USuqsQuestState::SetBranchActive(FName Branch, bool bActive) {
-  if (Branch.IsNone()) return;
+  if (Branch.IsNone()) { return; }
 
   bool bChanged = false;
   if (bActive) {
@@ -71,10 +69,9 @@ void USuqsQuestState::SetBranchActive(FName Branch, bool bActive) {
       ActiveBranches.Add(Branch);
       bChanged = true;
     }
-  } else
-    bChanged = ActiveBranches.Remove(Branch) > 0;
+  } else { bChanged = ActiveBranches.Remove(Branch) > 0; }
 
-  if (bChanged) NotifyObjectiveStatusChanged();
+  if (bChanged) { NotifyObjectiveStatusChanged(); }
 }
 
 void USuqsQuestState::ResetBranches() {
@@ -86,7 +83,7 @@ void USuqsQuestState::ResetBranches() {
 
 bool USuqsQuestState::IsBranchActive(FName Branch) {
   // No branch is always active
-  if (Branch.IsNone()) return true;
+  if (Branch.IsNone()) { return true; }
 
   return ActiveBranches.Contains(Branch);
 }
@@ -96,13 +93,9 @@ bool USuqsQuestState::CompleteTask(FName TaskID) {
   return false;
 }
 
-void USuqsQuestState::ResolveTask(FName TaskID) {
-  if (auto T = GetTask(TaskID)) { T->Resolve(); }
-}
+void USuqsQuestState::ResolveTask(FName TaskID) { if (auto T = GetTask(TaskID)) { T->Resolve(); } }
 
-void USuqsQuestState::FailTask(const FName& TaskID) {
-  if (auto T = GetTask(TaskID)) { T->Fail(); }
-}
+void USuqsQuestState::FailTask(const FName& TaskID) { if (auto T = GetTask(TaskID)) { T->Fail(); } }
 
 int USuqsQuestState::ProgressTask(FName TaskID, int Delta) {
   if (auto T = GetTask(TaskID)) { return T->Progress(Delta); }
@@ -110,47 +103,44 @@ int USuqsQuestState::ProgressTask(FName TaskID, int Delta) {
 }
 
 FText USuqsQuestState::GetTitle() const {
-  if (bTitleNeedsFormatting)
+  if (bTitleNeedsFormatting) {
     return GetRootProgression()->FormatQuestText(GetIdentifier(), QuestDefinition->Title);
-  else
-    return QuestDefinition->Title;
+  }
+  return QuestDefinition->Title;
 }
 
 FText USuqsQuestState::GetDescription() const {
   const bool bUseCompleted = (Status == ESuqsQuestStatus::Completed &&
-                              !QuestDefinition->DescriptionWhenCompleted.IsEmpty());
+    !QuestDefinition->DescriptionWhenCompleted.IsEmpty());
 
-  if (bUseCompleted)
+  if (bUseCompleted) {
     return bCompletedDescriptionNeedsFormatting
         ? GetRootProgression()->FormatQuestText(GetIdentifier(),
                                                 QuestDefinition->DescriptionWhenCompleted)
         : QuestDefinition->DescriptionWhenCompleted;
-  else
-    return bActiveDescriptionNeedsFormatting
-        ? GetRootProgression()->FormatQuestText(GetIdentifier(),
-                                                QuestDefinition->DescriptionWhenActive)
-        : QuestDefinition->DescriptionWhenActive;
+  }
+  return bActiveDescriptionNeedsFormatting
+      ? GetRootProgression()->FormatQuestText(GetIdentifier(),
+                                              QuestDefinition->DescriptionWhenActive)
+      : QuestDefinition->DescriptionWhenActive;
 }
 
 USuqsObjectiveState* USuqsQuestState::GetCurrentObjective() const {
-  if (CurrentObjectiveIndex >= 0 && CurrentObjectiveIndex < Objectives.Num())
+  if (CurrentObjectiveIndex >= 0 && CurrentObjectiveIndex < Objectives.Num()) {
     return Objectives[CurrentObjectiveIndex];
+  }
 
   return nullptr;
 }
 
 USuqsObjectiveState* USuqsQuestState::GetObjective(const FName& Identifier) const {
-  for (auto O : Objectives) {
-    if (O->GetIdentifier() == Identifier) return O;
-  }
+  for (auto O : Objectives) { if (O->GetIdentifier() == Identifier) { return O; } }
   return nullptr;
 }
 
 void USuqsQuestState::GetActiveObjectives(TArray<USuqsObjectiveState*>& ActiveObjectivesOut) const {
   ActiveObjectivesOut.Reset();
-  for (auto O : Objectives) {
-    if (O->IsOnActiveBranch()) ActiveObjectivesOut.Add(O);
-  }
+  for (auto O : Objectives) { if (O->IsOnActiveBranch()) { ActiveObjectivesOut.Add(O); } }
 }
 
 bool USuqsQuestState::IsResolveBlocked() const {
@@ -203,9 +193,7 @@ bool USuqsQuestState::IsTaskRelevant(const FName& TaskID) const {
   return false;
 }
 
-void USuqsQuestState::ResetTask(FName TaskID) {
-  if (auto T = GetTask(TaskID)) { T->Reset(); }
-}
+void USuqsQuestState::ResetTask(FName TaskID) { if (auto T = GetTask(TaskID)) { T->Reset(); } }
 
 void USuqsQuestState::Reset() {
   // Let's not raise objective changed events until we're done
@@ -237,9 +225,7 @@ void USuqsQuestState::Fail() {
 }
 
 void USuqsQuestState::Complete() {
-  for (auto Obj : Objectives) {
-    Obj->CompleteAllMandatoryTasks();
-  }
+  for (auto Obj : Objectives) { Obj->CompleteAllMandatoryTasks(); }
 }
 
 void USuqsQuestState::Resolve() {
@@ -257,9 +243,7 @@ void USuqsQuestState::SetResolveBarrier(const FSuqsResolveBarrierStateData& Barr
 void USuqsQuestState::StartLoad() { bIsLoading = true; }
 
 void USuqsQuestState::FinishLoad() {
-  for (auto O : Objectives) {
-    O->FinishLoad();
-  }
+  for (auto O : Objectives) { O->FinishLoad(); }
   NotifyObjectiveStatusChanged();
 
   // Also need to determine if the title needs formatting, since Initialise() is not called
@@ -285,7 +269,8 @@ void USuqsQuestState::NotifyObjectiveStatusChanged() {
         CurrentObjectiveIndex = i;
         // first incomplete unfiltered objective is the next one
         break;
-      } else if (Obj->IsFailed()) {
+      }
+      if (Obj->IsFailed()) {
         // Failed objective may fail quest
         FailQuest = !Obj->GetContinueOnFail();
       }
@@ -293,9 +278,7 @@ void USuqsQuestState::NotifyObjectiveStatusChanged() {
   }
 
   // If any unfiltered objectives failed, we lose
-  if (FailQuest) {
-    ChangeStatus(ESuqsQuestStatus::Failed);
-  } else if (CurrentObjectiveIndex == -1) {
+  if (FailQuest) { ChangeStatus(ESuqsQuestStatus::Failed); } else if (CurrentObjectiveIndex == -1) {
     // No incomplete objectives, and no failures
     ChangeStatus(ESuqsQuestStatus::Completed);
   } else {
@@ -326,9 +309,7 @@ void USuqsQuestState::OverrideStatus(ESuqsQuestStatus OverrideStatus) {
 void USuqsQuestState::NotifyGateOpened(const FName& GateName) {
   // This one proceeds downards to children
   // Cascade first so that objectives & tasks are finished first
-  for (auto Obj : Objectives) {
-    Obj->NotifyGateOpened(GateName);
-  }
+  for (auto Obj : Objectives) { Obj->NotifyGateOpened(GateName); }
 
   if (IsResolveBlockedOn(ESuqsResolveBarrierCondition::Gate) && ResolveBarrier.Gate == GateName) {
     MaybeNotifyStatusChange();
@@ -371,10 +352,10 @@ bool USuqsQuestState::IsResolveBlockedOn(ESuqsResolveBarrierCondition Barrier) c
 void USuqsQuestState::MaybeNotifyStatusChange() {
   // Early-out if incomplete or barrier has already been processed so we only do this once per
   // status change
-  if (!ResolveBarrier.bPending) return;
+  if (!ResolveBarrier.bPending) { return; }
 
   // Can't resolve unless completed/failed
-  if (!IsCompleted() && !IsFailed()) return;
+  if (!IsCompleted() && !IsFailed()) { return; }
 
   // Assume cleared
   bool bCleared = true;

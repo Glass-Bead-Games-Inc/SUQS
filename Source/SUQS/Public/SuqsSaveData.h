@@ -9,23 +9,22 @@ USTRUCT(BlueprintType)
 struct SUQS_API FSuqsResolveBarrierStateData {
   GENERATED_BODY()
 
-public:
   int32 Conditions;
   float TimeRemaining;
   FString Gate;
   bool bGrantedExplicitly;
   bool bPending;
-  ::FSuqsResolveBarrierStateData& operator=(const FSuqsResolveBarrier& Barrier);
+  FSuqsResolveBarrierStateData& operator=(const FSuqsResolveBarrier& Barrier);
   void SaveToArchive(FArchive& Ar);
   void LoadFromArchive(FArchive& Ar, int FileVersion);
 };
+
 /** Saved state data for a task. Objectives are implied from this.
  */
 USTRUCT(BlueprintType)
 struct SUQS_API FSuqsTaskStateData {
   GENERATED_BODY()
 
-public:
   FString Identifier;
   int Number;
   float TimeRemaining;
@@ -48,7 +47,6 @@ USTRUCT(BlueprintType)
 struct SUQS_API FSuqsQuestStateData {
   GENERATED_BODY()
 
-public:
   FString Identifier;
   // We do store the overall quest state, to avoid resurrecting quests if they're given new tasks in
   // an update but save game has them complete
@@ -74,7 +72,6 @@ USTRUCT(BlueprintType)
 struct SUQS_API FSuqsSaveData {
   GENERATED_BODY()
 
-public:
   int Version;
   TArray<FSuqsQuestStateData> QuestData;
   TArray<FString> GlobalActiveBranches;

@@ -39,8 +39,8 @@ const FString QuestsWithParamsJson = R"RAWJSON([
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestFormatParams, "SUQSTest.QuestFormatParams",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestFormatParams::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -88,8 +88,8 @@ bool FTestQuestFormatParams::RunTest(const FString& Parameters) {
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestNoParams, "SUQSTest.QuestNoParams",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestNoParams::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();

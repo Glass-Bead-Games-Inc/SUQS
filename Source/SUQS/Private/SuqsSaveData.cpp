@@ -67,9 +67,7 @@ void FSuqsQuestStateData::SaveToArchive(FArchive& Ar) {
   int NumTasks = TaskData.Num();
   Ar << NumTasks;
 
-  for (auto& T : TaskData) {
-    T.SaveToArchive(Ar);
-  }
+  for (auto& T : TaskData) { T.SaveToArchive(Ar); }
 }
 
 void FSuqsQuestStateData::LoadFromArchive(FArchive& Ar, int FileVersion) {
@@ -92,9 +90,7 @@ void FSuqsQuestStateData::LoadFromArchive(FArchive& Ar, int FileVersion) {
   Ar << NumTasks;
 
   TaskData.SetNum(NumTasks);
-  for (int i = 0; i < NumTasks; ++i) {
-    TaskData[i].LoadFromArchive(Ar, FileVersion);
-  }
+  for (int i = 0; i < NumTasks; ++i) { TaskData[i].LoadFromArchive(Ar, FileVersion); }
 }
 
 void FSuqsSaveData::SaveToArchive(FArchive& Ar) {
@@ -110,9 +106,7 @@ void FSuqsSaveData::SaveToArchive(FArchive& Ar) {
   // Quests
   int NumQuests = QuestData.Num();
   Ar << NumQuests;
-  for (auto& Q : QuestData) {
-    Q.SaveToArchive(Ar);
-  }
+  for (auto& Q : QuestData) { Q.SaveToArchive(Ar); }
 }
 
 void FSuqsSaveData::LoadFromArchive(FArchive& Ar) {
@@ -126,24 +120,15 @@ void FSuqsSaveData::LoadFromArchive(FArchive& Ar) {
 
   // Global branches
   Ar << GlobalActiveBranches;
-  if (FileVersion >= FileVersion_AddedOpenGates) {
-    Ar << OpenGates;
-  } else {
-    OpenGates.Empty();
-  }
+  if (FileVersion >= FileVersion_AddedOpenGates) { Ar << OpenGates; } else { OpenGates.Empty(); }
 
   // Active & archived quests go together
   int NumQuests = QuestData.Num();
   Ar << NumQuests;
   QuestData.SetNum(NumQuests);
-  for (int i = 0; i < NumQuests; ++i) {
-    QuestData[i].LoadFromArchive(Ar, FileVersion);
-  }
+  for (int i = 0; i < NumQuests; ++i) { QuestData[i].LoadFromArchive(Ar, FileVersion); }
 }
 
 void FSuqsSaveData::Serialize(FArchive& Ar) {
-  if (Ar.IsLoading())
-    LoadFromArchive(Ar);
-  else
-    SaveToArchive(Ar);
+  if (Ar.IsLoading()) { LoadFromArchive(Ar); } else { SaveToArchive(Ar); }
 }

@@ -6,8 +6,8 @@
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestTimedResolve, "SUQSTest.QuestTimedResolve",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestTimedResolve::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -42,8 +42,8 @@ bool FTestQuestTimedResolve::RunTest(const FString& Parameters) {
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestGatedResolve, "SUQSTest.QuestGatedResolve",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestGatedResolve::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -69,8 +69,8 @@ bool FTestQuestGatedResolve::RunTest(const FString& Parameters) {
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestManualResolve, "SUQSTest.QuestManualResolve",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestManualResolve::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();

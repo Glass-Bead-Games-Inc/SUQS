@@ -10,9 +10,11 @@
 class USuqsQuestState;
 class USuqsObjectiveState;
 class USuqsTaskState;
+
 UCLASS()
 class UCallbackCatcher : public UObject {
   GENERATED_BODY()
+
 public:
   UPROPERTY()
   TArray<USuqsQuestState*> AcceptedQuests;
@@ -34,20 +36,28 @@ public:
   TArray<FSuqsProgressionEventDetails> ProgressionEvents;
   UFUNCTION()
   void OnQuestAccepted(USuqsQuestState* Quest) { AcceptedQuests.Add(Quest); }
+
   UFUNCTION()
   void OnQuestCompleted(USuqsQuestState* Quest) { CompletedQuests.Add(Quest); }
+
   UFUNCTION()
   void OnQuestFailed(USuqsQuestState* Quest) { FailedQuests.Add(Quest); }
+
   UFUNCTION()
   void OnTaskUpdated(USuqsTaskState* Task) { UpdatedTasks.Add(Task); }
+
   UFUNCTION()
   void OnTaskCompleted(USuqsTaskState* Task) { CompletedTasks.Add(Task); }
+
   UFUNCTION()
   void OnTaskFailed(USuqsTaskState* Task) { FailedTasks.Add(Task); }
+
   UFUNCTION()
   void OnObjectiveCompleted(USuqsObjectiveState* Objective) { CompletedObjectives.Add(Objective); }
+
   UFUNCTION()
   void OnObjectiveFailed(USuqsObjectiveState* Objective) { FailedObjectives.Add(Objective); }
+
   UFUNCTION()
   void OnProgression(const FSuqsProgressionEventDetails& Dtls) { ProgressionEvents.Add(Dtls); }
 

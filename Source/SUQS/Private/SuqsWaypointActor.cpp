@@ -25,9 +25,7 @@ void ASuqsWaypointActorBase::BeginPlay() {
 }
 
 void ASuqsWaypointActorBase::OnWaypointVisibilityPotentiallyChanged(
-    USuqsWaypointComponent* Waypoint) {
-  UpdateWaypointVisibility();
-}
+    USuqsWaypointComponent* Waypoint) { UpdateWaypointVisibility(); }
 
 void ASuqsWaypointActorBase::UpdateWaypointVisibility() const {
   const bool bVisible = WaypointComponent->IsEnabled() && WaypointComponent->IsCurrent();

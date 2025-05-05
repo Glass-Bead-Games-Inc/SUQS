@@ -63,7 +63,6 @@ enum class ESuqsProgressionEventType : uint8 {
 USTRUCT(BlueprintType)
 struct FSuqsProgressionEventDetails {
   GENERATED_BODY()
-public:
   /// The event type, always present
   UPROPERTY(BlueprintReadOnly)
   ESuqsProgressionEventType EventType;
@@ -81,43 +80,51 @@ public:
   class USuqsWaypointComponent* Waypoint;
 
   explicit FSuqsProgressionEventDetails(ESuqsProgressionEventType EType)
-      : EventType(EType), Quest(nullptr), Objective(nullptr), Task(nullptr), Waypoint(nullptr) {}
+    : EventType(EType), Quest(nullptr), Objective(nullptr), Task(nullptr), Waypoint(nullptr) {}
 
   FSuqsProgressionEventDetails(ESuqsProgressionEventType EventType, USuqsQuestState* Quest)
-      : EventType(EventType), Quest(Quest), Objective(nullptr), Task(nullptr), Waypoint(nullptr) {}
+    : EventType(EventType), Quest(Quest), Objective(nullptr), Task(nullptr), Waypoint(nullptr) {}
 
   FSuqsProgressionEventDetails(ESuqsProgressionEventType EventType, USuqsObjectiveState* Objective)
-      : EventType(EventType), Quest(Objective ? Objective->GetParentQuest() : nullptr),
-        Objective(Objective), Task(nullptr), Waypoint(nullptr) {}
+    : EventType(EventType), Quest(Objective ? Objective->GetParentQuest() : nullptr),
+      Objective(Objective), Task(nullptr), Waypoint(nullptr) {}
 
   FSuqsProgressionEventDetails(ESuqsProgressionEventType EventType, USuqsTaskState* Task)
-      : EventType(EventType), Quest(Task ? Task->GetParentObjective()->GetParentQuest() : nullptr),
-        Objective(nullptr), Task(Task), Waypoint(nullptr) {}
+    : EventType(EventType), Quest(Task ? Task->GetParentObjective()->GetParentQuest() : nullptr),
+      Objective(nullptr), Task(Task), Waypoint(nullptr) {}
+
   FSuqsProgressionEventDetails(ESuqsProgressionEventType EventType,
                                USuqsWaypointComponent* Waypoint, USuqsTaskState* Task)
-      : EventType(EventType), Quest(Task ? Task->GetParentObjective()->GetParentQuest() : nullptr),
-        Objective(nullptr), Task(Task), Waypoint(Waypoint)
-
-  {}
+    : EventType(EventType), Quest(Task ? Task->GetParentObjective()->GetParentQuest() : nullptr),
+      Objective(nullptr), Task(Task), Waypoint(Waypoint) {}
 
   FSuqsProgressionEventDetails()
-      : EventType(), Quest(nullptr), Objective(nullptr), Task(nullptr), Waypoint(nullptr) {}
+    : EventType(), Quest(nullptr), Objective(nullptr), Task(nullptr), Waypoint(nullptr) {}
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnProgressionEvent,
                                             const FSuqsProgressionEventDetails&, Details);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTaskUpdated, USuqsTaskState*, Task);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTaskCompleted, USuqsTaskState*, Task);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTaskFailed, USuqsTaskState*, Task);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnObjectiveCompleted, USuqsObjectiveState*, Objective);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnObjectiveFailed, USuqsObjectiveState*, Objective);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnActiveQuestsListChanged);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestCompleted, USuqsQuestState*, Quest);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestFailed, USuqsQuestState*, Quest);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestAccepted, USuqsQuestState*, Quest);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnProgressionLoaded, USuqsProgression*, Progression);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnProgressParameterProvidersChanged, USuqsProgression*,
                                             Progression);
 

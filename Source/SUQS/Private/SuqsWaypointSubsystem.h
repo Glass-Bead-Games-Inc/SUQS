@@ -8,8 +8,10 @@ class USuqsProgression;
 class USuqsWaypointComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSuqsOnAnyWaypointMoved, USuqsWaypointComponent*,
                                             Waypoint);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSuqsOnAnyWaypointEnabledChanged,
                                             USuqsWaypointComponent*, Waypoint);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSuqsOnAnyWaypointIsCurrentChanged,
                                             USuqsWaypointComponent*, Waypoint);
 

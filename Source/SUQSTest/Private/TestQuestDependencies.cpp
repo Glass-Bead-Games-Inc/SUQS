@@ -69,8 +69,8 @@ const FString SuccessDependentQuestJson = R"RAWJSON([
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestSuccessDependencies, "SUQSTest.QuestSuccessDependencies",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestSuccessDependencies::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -137,8 +137,8 @@ const FString FailureDependentQuestJson = R"RAWJSON([
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestFailureDependencies, "SUQSTest.QuestFailureDependencies",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestFailureDependencies::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -205,8 +205,8 @@ const FString MixedDependentQuestJson = R"RAWJSON([
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestMixedDependencies, "SUQSTest.QuestMixedDependencies",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestMixedDependencies::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();

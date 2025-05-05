@@ -8,8 +8,8 @@
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestBranchNoBranches, "SUQSTest.QuestBranchNoBranches",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestBranchNoBranches::RunTest(const FString& Parameters) {
   // This tests what happens with no branches enabled
@@ -33,8 +33,8 @@ bool FTestQuestBranchNoBranches::RunTest(const FString& Parameters) {
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestBranchA, "SUQSTest.QuestBranchA",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestBranchA::RunTest(const FString& Parameters) {
   // This tests what happens with no branches enabled
@@ -61,8 +61,8 @@ bool FTestQuestBranchA::RunTest(const FString& Parameters) {
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestBranchB, "SUQSTest.QuestBranchB",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestBranchB::RunTest(const FString& Parameters) {
   // This tests what happens with no branches enabled
@@ -92,8 +92,8 @@ bool FTestQuestBranchB::RunTest(const FString& Parameters) {
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestDynamicBranchChange, "SUQSTest.QuestDynamicBranchChange",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestDynamicBranchChange::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -264,8 +264,8 @@ const FString BranchingQuest2Json = R"RAWJSON([
 ])RAWJSON";
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestGlobalBranch, "SUQSTest.QuestGlobalBranch",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestGlobalBranch::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();
@@ -486,8 +486,8 @@ const FString BranchingQuestDefaultsJson = R"RAWJSON([
 ])RAWJSON";
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestDefaultBranches, "SUQSTest.QuestDefaultBranches",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestDefaultBranches::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();

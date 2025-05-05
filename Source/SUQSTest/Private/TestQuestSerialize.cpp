@@ -7,8 +7,8 @@
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestSerialize, "SUQSTest.QuestSerialize",
                                  EAutomationTestFlags::EditorContext |
-                                     EAutomationTestFlags::ClientContext |
-                                     EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::ClientContext |
+                                 EAutomationTestFlags::ProductFilter)
 
 bool FTestQuestSerialize::RunTest(const FString& Parameters) {
   USuqsProgression* Progression = NewObject<USuqsProgression>();

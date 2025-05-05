@@ -19,7 +19,6 @@ public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame)
   USuqsWaypointComponent* WaypointComponent;
 
-public:
   ASuqsWaypointActorBase();
 
 protected:

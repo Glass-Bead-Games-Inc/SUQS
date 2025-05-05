@@ -7,6 +7,7 @@
 #include "SuqsTaskState.generated.h"
 
 class USuqsWaypointComponent;
+
 UENUM(BlueprintType)
 enum class ESuqsTaskStatus : uint8 {
   /// No progress has been made
@@ -76,17 +77,22 @@ public:
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   const FName& GetIdentifier() const { return TaskDefinition->Identifier; }
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool IsMandatory() const { return TaskDefinition->bMandatory; }
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool IsTimeLimited() const { return TaskDefinition->TimeLimit > 0; }
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   float GetTimeLimit() const { return TaskDefinition->TimeLimit; }
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   FText GetTitle() const;
   /// The target number of things to be achieved
   UFUNCTION(BlueprintCallable, BlueprintPure)
   int GetTargetNumber() const { return TaskDefinition->TargetNumber; }
+
   /// Return whether or not this task has a number of things to achieve rather than just 1 discrete
   /// completion
   UFUNCTION(BlueprintCallable, BlueprintPure)

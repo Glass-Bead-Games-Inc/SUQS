@@ -38,8 +38,10 @@ void USuqsProgression::AddQuestDataTable(UDataTable* Table) {
   Table->ForeachRow<FSuqsQuest>("", [this, Table](const FName& Key, const FSuqsQuest& Quest) {
     if (QuestDefinitions.Contains(Quest.Identifier))
       UE_LOG(LogSUQS, Error,
-             TEXT("Quest ID '%s' has been used more than once! Duplicate entry was in %s"),
-             *Quest.Identifier.ToString(), *Table->GetName());
+           TEXT(
+             "Quest ID '%s' has been used more than once! Duplicate entry was in %s"
+           ),
+           *Quest.Identifier.ToString(), *Table->GetName());
 
     // Check task IDs are unique
     TSet<FName> TaskIDSet;
@@ -49,8 +51,10 @@ void USuqsProgression::AddQuestDataTable(UDataTable* Table) {
         TaskIDSet.Add(Task.Identifier, &bDuplicate);
         if (bDuplicate)
           UE_LOG(LogSUQS, Error,
-                 TEXT("Task ID '%s' has been used more than once! Duplicate entry title: %s"),
-                 *Task.Identifier.ToString(), *Task.Title.ToString());
+               TEXT(
+                 "Task ID '%s' has been used more than once! Duplicate entry title: %s"
+               ),
+               *Task.Identifier.ToString(), *Task.Title.ToString());
       }
     }
 
@@ -103,9 +107,7 @@ void USuqsProgression::RebuildAllQuestData() {
 
   // Build unified quest table
   if (QuestDataTables.Num() > 0) {
-    for (auto Table : QuestDataTables) {
-      AddQuestDataTable(Table);
-    }
+    for (auto Table : QuestDataTables) { AddQuestDataTable(Table); }
   }
 
   const auto GI = UGameplayStatics::GetGameInstance(this);
@@ -124,10 +126,8 @@ ESuqsQuestStatus USuqsProgression::GetQuestStatus(FName QuestID) const {
   // Could make a lookup for this, but we'd need to post-load call to re-populate it, leave for now
   const auto State = FindQuestState(QuestID);
 
-  if (State)
-    return State->GetStatus();
-  else
-    return ESuqsQuestStatus::Unavailable;
+  if (State) { return State->GetStatus(); }
+  return ESuqsQuestStatus::Unavailable;
 }
 
 USuqsQuestState* USuqsProgression::GetQuest(FName QuestID) {
@@ -138,9 +138,9 @@ USuqsQuestState* USuqsProgression::GetQuest(FName QuestID) {
 
 USuqsQuestState* USuqsProgression::FindQuestState(const FName& QuestID) {
   auto PQ = ActiveQuests.Find(QuestID);
-  if (PQ) return *PQ;
+  if (PQ) { return *PQ; }
   PQ = QuestArchive.Find(QuestID);
-  if (PQ) return *PQ;
+  if (PQ) { return *PQ; }
 
   return nullptr;
 }
@@ -231,27 +231,23 @@ bool USuqsProgression::AcceptQuest(FName QuestID, bool bResetIfFailed, bool bRes
       }
 
       // Propagate global quest branches
-      for (auto& Branch : GlobalActiveBranches) {
-        Quest->SetBranchActive(Branch, true);
-      }
+      for (auto& Branch : GlobalActiveBranches) { Quest->SetBranchActive(Branch, true); }
     }
 
     return true;
-  } else {
-    UE_LOG(LogSUQS, Error, TEXT("Attempted to accept a non-existent quest %s"),
-           *QuestID.ToString());
-    return false;
   }
+  UE_LOG(LogSUQS, Error, TEXT("Attempted to accept a non-existent quest %s"),
+         *QuestID.ToString());
+  return false;
 }
 
 
 bool USuqsProgression::AutoAcceptQuests(const FName& FinishedQuestID, bool bFailed) {
   bool bAnyAccepted = false;
   TArray<FName> DependentQuestIDs;
-  if (bFailed)
-    QuestFailureDeps.MultiFind(FinishedQuestID, DependentQuestIDs);
-  else
+  if (bFailed) { QuestFailureDeps.MultiFind(FinishedQuestID, DependentQuestIDs); } else {
     QuestCompletionDeps.MultiFind(FinishedQuestID, DependentQuestIDs);
+  }
 
   for (const auto& DepQuestID : DependentQuestIDs) {
     if (!IsQuestAccepted(DepQuestID) && QuestDependenciesMet(DepQuestID)) {
@@ -264,20 +260,20 @@ bool USuqsProgression::AutoAcceptQuests(const FName& FinishedQuestID, bool bFail
 
 void USuqsProgression::ResetQuest(FName QuestID) {
   auto Q = FindQuestState(QuestID);
-  if (Q) Q->Reset();
+  if (Q) { Q->Reset(); }
 
   // note we don't update quest lists here, but we rely on callbacks since you could reset or
   // re-activate using the quest itself
 }
 
 void USuqsProgression::RemoveQuest(FName QuestID, bool bRemoveActive, bool bRemoveArchived) {
-  if (bRemoveActive) ActiveQuests.Remove(QuestID);
-  if (bRemoveArchived) QuestArchive.Remove(QuestID);
+  if (bRemoveActive) { ActiveQuests.Remove(QuestID); }
+  if (bRemoveArchived) { QuestArchive.Remove(QuestID); }
 }
 
 void USuqsProgression::FailQuest(FName QuestID) {
   auto Q = FindQuestState(QuestID);
-  if (Q) Q->Fail();
+  if (Q) { Q->Fail(); }
 
   // note we don't update quest lists here, but we rely on callbacks since you could fail via the
   // quest itself
@@ -285,19 +281,17 @@ void USuqsProgression::FailQuest(FName QuestID) {
 
 void USuqsProgression::CompleteQuest(FName QuestID) {
   auto Q = FindQuestState(QuestID);
-  if (Q) Q->Complete();
+  if (Q) { Q->Complete(); }
 }
 
 void USuqsProgression::ResolveQuest(FName QuestID) {
   auto Q = FindQuestState(QuestID);
-  if (Q) Q->Resolve();
+  if (Q) { Q->Resolve(); }
 }
 
 void USuqsProgression::FailTask(FName QuestID, FName TaskIdentifier) {
   if (QuestID.IsNone()) {
-    for (auto Pair : ActiveQuests) {
-      Pair.Value->FailTask(TaskIdentifier);
-    }
+    for (auto Pair : ActiveQuests) { Pair.Value->FailTask(TaskIdentifier); }
   } else {
     auto T = FindTaskStatus(QuestID, TaskIdentifier);
     if (T) { T->Fail(); }
@@ -311,7 +305,7 @@ bool USuqsProgression::CompleteTask(FName QuestID, FName TaskIdentifier) {
     for (auto Pair : ActiveQuests) {
       bCompleted = Pair.Value->CompleteTask(TaskIdentifier) || bCompleted;
     }
-    if (bCompleted) return true;
+    if (bCompleted) { return true; }
   } else {
     auto T = FindTaskStatus(QuestID, TaskIdentifier);
     if (T) { return T->Complete(); }
@@ -329,18 +323,15 @@ int USuqsProgression::ProgressTask(FName QuestID, FName TaskIdentifier, int Delt
       MaxLeft = std::max(Pair.Value->ProgressTask(TaskIdentifier, Delta), MaxLeft);
     }
     return MaxLeft;
-  } else {
-    auto T = FindTaskStatus(QuestID, TaskIdentifier);
-    if (T) { return T->Progress(Delta); }
-    return 0;
   }
+  auto T = FindTaskStatus(QuestID, TaskIdentifier);
+  if (T) { return T->Progress(Delta); }
+  return 0;
 }
 
 void USuqsProgression::ResolveTask(FName QuestID, FName TaskIdentifier) {
   if (QuestID.IsNone()) {
-    for (auto Pair : ActiveQuests) {
-      Pair.Value->ResolveTask(TaskIdentifier);
-    }
+    for (auto Pair : ActiveQuests) { Pair.Value->ResolveTask(TaskIdentifier); }
   } else {
     auto T = FindTaskStatus(QuestID, TaskIdentifier);
     if (T) { T->Resolve(); }
@@ -443,25 +434,21 @@ bool USuqsProgression::IsQuestBranchActive(FName QuestID, FName Branch) {
 }
 
 void USuqsProgression::SetGlobalQuestBranchActive(FName Branch, bool bActive) {
-  if (Branch.IsNone()) return;
+  if (Branch.IsNone()) { return; }
 
   bool bChanged = false;
-  ;
   if (bActive) {
     if (!GlobalActiveBranches.Contains(Branch)) {
       GlobalActiveBranches.Add(Branch);
       bChanged = true;
     }
-  } else
-    bChanged = GlobalActiveBranches.Remove(Branch) > 0;
+  } else { bChanged = GlobalActiveBranches.Remove(Branch) > 0; }
 
   if (bChanged) {
     // Copy into temporary list because this can change quest state and move between lists
     TArray<USuqsQuestState*> ListCopy;
     ActiveQuests.GenerateValueArray(ListCopy);
-    for (auto Q : ListCopy) {
-      Q->SetBranchActive(Branch, bActive);
-    }
+    for (auto Q : ListCopy) { Q->SetBranchActive(Branch, bActive); }
   }
 }
 
@@ -470,16 +457,14 @@ void USuqsProgression::ResetGlobalQuestBranches() {
     // Copy into temporary list because this can change quest state and move between lists
     TArray<USuqsQuestState*> ListCopy;
     ActiveQuests.GenerateValueArray(ListCopy);
-    for (auto Q : ListCopy) {
-      Q->SetBranchActive(Branch, false);
-    }
+    for (auto Q : ListCopy) { Q->SetBranchActive(Branch, false); }
   }
   GlobalActiveBranches.Empty();
 }
 
 bool USuqsProgression::IsGlobalQuestBranchActive(FName Branch) {
   // No branch is always active
-  if (Branch.IsNone()) return true;
+  if (Branch.IsNone()) { return true; }
 
   return GlobalActiveBranches.Contains(Branch);
 }
@@ -490,7 +475,7 @@ const TArray<FName>& USuqsProgression::GetGlobalActiveQuestBranches() const {
 
 void USuqsProgression::SetGateOpen(FName GateName, bool bOpen) {
   // Ignore nonsense
-  if (GateName.IsNone()) return;
+  if (GateName.IsNone()) { return; }
 
   if (bOpen) {
     bool bWasAlreadyPresent;
@@ -499,17 +484,14 @@ void USuqsProgression::SetGateOpen(FName GateName, bool bOpen) {
       TArray<USuqsQuestState*> ActiveQuestList;
       // Need to copy since this change may cascade to completing quests
       ActiveQuests.GenerateValueArray(ActiveQuestList);
-      for (auto Quest : ActiveQuestList) {
-        Quest->NotifyGateOpened(GateName);
-      }
+      for (auto Quest : ActiveQuestList) { Quest->NotifyGateOpened(GateName); }
     }
-  } else
-    OpenGates.Remove(GateName);
+  } else { OpenGates.Remove(GateName); }
 }
 
 bool USuqsProgression::IsGateOpen(FName GateName) {
   // No gate is always OK
-  if (GateName.IsNone()) return true;
+  if (GateName.IsNone()) { return true; }
 
   return OpenGates.Contains(GateName);
 }
@@ -517,10 +499,10 @@ bool USuqsProgression::IsGateOpen(FName GateName) {
 bool USuqsProgression::QuestDependenciesMet(const FName& QuestID) {
   if (auto QuestDef = QuestDefinitions.Find(QuestID)) {
     for (auto& RequiredCompletedID : QuestDef->PrerequisiteQuests) {
-      if (!IsQuestCompleted(RequiredCompletedID)) return false;
+      if (!IsQuestCompleted(RequiredCompletedID)) { return false; }
     }
     for (auto& RequiredFailedID : QuestDef->PrerequisiteQuestFailures) {
-      if (!IsQuestFailed(RequiredFailedID)) return false;
+      if (!IsQuestFailed(RequiredFailedID)) { return false; }
     }
     return true;
   }
@@ -538,7 +520,7 @@ void USuqsProgression::AddParameterProvider(UObject* Provider) {
   } else {
     UE_LOG(LogSUQS, Error,
            TEXT("Provider passed to AddFormatter is either invalid or doesn't implement "
-                "ISuqsParameterProvider, ignoring."))
+             "ISuqsParameterProvider, ignoring."))
   }
 }
 
@@ -550,10 +532,9 @@ void USuqsProgression::RemoveAllParameterProviders() { ParameterProviders.Empty(
 
 FText USuqsProgression::FormatQuestOrTaskText(const FName& QuestID, const FName& TaskID,
                                               const FText& FormatText) {
-  if (!IsValid(FormatParams))
-    FormatParams = NewObject<USuqsNamedFormatParams>();
-  else
+  if (!IsValid(FormatParams)) { FormatParams = NewObject<USuqsNamedFormatParams>(); } else {
     FormatParams->Empty();
+  }
 
   for (int i = 0; i < ParameterProviders.Num(); ++i) {
     auto F = ParameterProviders[i];
@@ -606,9 +587,7 @@ void USuqsProgression::RaiseTaskCompleted(USuqsTaskState* Task) {
   }
   // A task being completed means its waypoints are no longer needed
   auto Waypoints = Task->GetWaypoints(false);
-  for (auto W : Waypoints) {
-    W->SetIsCurrent(false);
-  }
+  for (auto W : Waypoints) { W->SetIsCurrent(false); }
 }
 
 void USuqsProgression::RaiseTaskAdded(USuqsTaskState* Task) {
@@ -643,9 +622,7 @@ void USuqsProgression::RaiseTaskRemoved(USuqsTaskState* Task) {
   }
   // A task being removed means its waypoints are no longer relevant
   auto Waypoints = Task->GetWaypoints(false);
-  for (auto W : Waypoints) {
-    W->SetIsCurrent(false);
-  }
+  for (auto W : Waypoints) { W->SetIsCurrent(false); }
 }
 
 void USuqsProgression::RaiseTaskFailed(USuqsTaskState* Task) {
@@ -656,9 +633,7 @@ void USuqsProgression::RaiseTaskFailed(USuqsTaskState* Task) {
   }
   // A task being failed means its waypoints are no longer needed
   auto Waypoints = Task->GetWaypoints(false);
-  for (auto W : Waypoints) {
-    W->SetIsCurrent(false);
-  }
+  for (auto W : Waypoints) { W->SetIsCurrent(false); }
 }
 
 
@@ -730,9 +705,7 @@ void USuqsProgression::RaiseCurrentObjectiveChanged(USuqsQuestState* Quest) {
     if (const auto Obj = Quest->GetCurrentObjective()) {
       TArray<USuqsTaskState*> Tasks;
       Obj->GetAllRelevantTasks(Tasks);
-      for (const auto T : Tasks) {
-        RaiseTaskAdded(T);
-      }
+      for (const auto T : Tasks) { RaiseTaskAdded(T); }
     }
   }
 }
@@ -822,9 +795,7 @@ void USuqsProgression::Tick(float DeltaTime) {
   // Copy into temporary list because ticking can fail quests and alter the collection
   TArray<USuqsQuestState*> ListCopy;
   ActiveQuests.GenerateValueArray(ListCopy);
-  for (auto Q : ListCopy) {
-    Q->Tick(DeltaTime);
-  }
+  for (auto Q : ListCopy) { Q->Tick(DeltaTime); }
 }
 
 TStatId USuqsProgression::GetStatId() const {
@@ -862,7 +833,6 @@ void USuqsProgression::Serialize(FArchive& Ar) {
     LoadFromData(Data);
 
     OnProgressionLoaded.Broadcast(this);
-
   } else {
     SaveToData(Data);
     Data.Serialize(Ar);
@@ -889,9 +859,7 @@ void USuqsProgression::LoadFromData(const FSuqsSaveData& Data) {
       Q->Initialise(QDef, this);
       Q->StartLoad();
 
-      for (FString Branch : QData.ActiveBranches) {
-        Q->SetBranchActive(FName(Branch), true);
-      }
+      for (FString Branch : QData.ActiveBranches) { Q->SetBranchActive(FName(Branch), true); }
 
       for (auto& TData : QData.TaskData) {
         // Discard task state which isn't in the quest any more
@@ -909,13 +877,13 @@ void USuqsProgression::LoadFromData(const FSuqsSaveData& Data) {
 
       Q->FinishLoad();
 
-      if (QData.Status == ESuqsQuestDataStatus::Incomplete)
+      if (QData.Status == ESuqsQuestDataStatus::Incomplete) {
         ActiveQuests.Add(QDef->Identifier, Q);
-      else {
+      } else {
         // Manually set the status, in case this isn't borne out by the current quest def
         Q->OverrideStatus(QData.Status == ESuqsQuestDataStatus::Failed
-                              ? ESuqsQuestStatus::Failed
-                              : ESuqsQuestStatus::Completed);
+            ? ESuqsQuestStatus::Failed
+            : ESuqsQuestStatus::Completed);
 
         QuestArchive.Add(QDef->Identifier, Q);
       }
@@ -930,9 +898,7 @@ void USuqsProgression::LoadFromData(const FSuqsSaveData& Data) {
   for (FString Branch : Data.GlobalActiveBranches) {
     SetGlobalQuestBranchActive(FName(Branch), true);
   }
-  for (FString Gate : Data.OpenGates) {
-    SetGateOpen(FName(Gate), true);
-  }
+  for (FString Gate : Data.OpenGates) { SetGateOpen(FName(Gate), true); }
 
 
   bSuppressEvents = false;
@@ -944,12 +910,8 @@ void USuqsProgression::SaveToData(FSuqsSaveData& Data) const {
   Data.GlobalActiveBranches.Empty();
   Data.OpenGates.Empty();
 
-  for (FName Branch : GlobalActiveBranches) {
-    Data.GlobalActiveBranches.Add(Branch.ToString());
-  }
-  for (FName Gate : OpenGates) {
-    Data.OpenGates.Add(Gate.ToString());
-  }
+  for (FName Branch : GlobalActiveBranches) { Data.GlobalActiveBranches.Add(Branch.ToString()); }
+  for (FName Gate : OpenGates) { Data.OpenGates.Add(Gate.ToString()); }
   SaveToData(ActiveQuests, Data);
   SaveToData(QuestArchive, Data);
 }
@@ -971,12 +933,10 @@ void USuqsProgression::SaveToData(TMap<FName, USuqsQuestState*> Quests, FSuqsSav
     case ESuqsQuestStatus::Failed:
       QData.Status = ESuqsQuestDataStatus::Failed;
       break;
-    default:;
+    default: ;
     }
 
-    for (auto Branch : Q->GetActiveBranches()) {
-      QData.ActiveBranches.Add(Branch.ToString());
-    }
+    for (auto Branch : Q->GetActiveBranches()) { QData.ActiveBranches.Add(Branch.ToString()); }
 
     QData.ResolveBarrier = Q->ResolveBarrier;
 
@@ -1007,4 +967,5 @@ void USuqsProgression::OnWaypointEnabledChanged(USuqsWaypointComponent* Waypoint
         ESuqsProgressionEventType::WaypointEnabledOrDisabled, Waypoint, Task));
   }
 }
+
 // PRAGMA_ENABLE_OPTIMIZATION

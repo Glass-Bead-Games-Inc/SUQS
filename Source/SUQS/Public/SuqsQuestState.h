@@ -36,6 +36,7 @@ enum class ESuqsResolveBarrierCondition : uint8 {
   Explicit = (1 << 2),
 
 };
+
 ENUM_CLASS_FLAGS(ESuqsResolveBarrierCondition);
 
 USTRUCT(BlueprintType)
@@ -44,7 +45,7 @@ struct FSuqsResolveBarrier {
 
   /// Bitflags identifying the conditional barriers to progression
   UPROPERTY(BlueprintReadOnly,
-            meta = (Bitmask, BitmaskEnum = "/Script/SUQS.ESuqsResolveBarrierCondition"))
+    meta = (Bitmask, BitmaskEnum = "/Script/SUQS.ESuqsResolveBarrierCondition"))
   int32 Conditions;
 
   /// The time remaining if the barrier includes time
@@ -64,15 +65,14 @@ struct FSuqsResolveBarrier {
   bool bPending;
 
   FSuqsResolveBarrier()
-      : Conditions(0), TimeRemaining(0), Gate(FName()), bGrantedExplicitly(false), bPending(false) {
-  }
+    : Conditions(0), TimeRemaining(0), Gate(FName()), bGrantedExplicitly(false), bPending(false) {}
 
   FSuqsResolveBarrier(int32 InBarriers, float InTimeRemaining, const FName& InGate,
                       bool bInGrantedExplicitly, bool bInPending)
-      : Conditions(InBarriers), TimeRemaining(InTimeRemaining), Gate(InGate),
-        bGrantedExplicitly(bInGrantedExplicitly), bPending(bInPending) {}
+    : Conditions(InBarriers), TimeRemaining(InTimeRemaining), Gate(InGate),
+      bGrantedExplicitly(bInGrantedExplicitly), bPending(bInPending) {}
 
-  ::FSuqsResolveBarrier& operator=(const FSuqsResolveBarrierStateData& B) {
+  FSuqsResolveBarrier& operator=(const FSuqsResolveBarrierStateData& B) {
     Conditions = B.Conditions;
     TimeRemaining = B.TimeRemaining;
     Gate = FName(B.Gate);
@@ -161,6 +161,7 @@ public:
   /// Get the unique quest identifier
   UFUNCTION(BlueprintCallable, BlueprintPure)
   const FName& GetIdentifier() const { return QuestDefinition->Identifier; }
+
   /// Get the quest title
   UFUNCTION(BlueprintCallable, BlueprintPure)
   FText GetTitle() const;
