@@ -23,7 +23,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSuqsOnAnyWaypointIsCurrentChanged,
  * class raises.
  */
 UCLASS()
-class USuqsWaypointSubsystem : public UGameInstanceSubsystem {
+class SUQS_API USuqsWaypointSubsystem : public UGameInstanceSubsystem {
   GENERATED_BODY()
 
 protected:
