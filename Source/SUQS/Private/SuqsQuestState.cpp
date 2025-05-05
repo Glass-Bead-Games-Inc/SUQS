@@ -267,6 +267,7 @@ void USuqsQuestState::NotifyObjectiveStatusChanged() {
     if (IsBranchActive(Obj->GetBranch())) {
       if (Obj->IsIncomplete()) {
         CurrentObjectiveIndex = i;
+        Objectives[CurrentObjectiveIndex]->NotifyTaskStatusChanged(nullptr);
         // first incomplete unfiltered objective is the next one
         break;
       }
