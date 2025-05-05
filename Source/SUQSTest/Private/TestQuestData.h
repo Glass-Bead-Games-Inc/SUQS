@@ -1,9 +1,10 @@
 #pragma once
 
 // Yes "Name" and "Identifier" are duplicated in the JSON for quests
-// That's because UE *requires* that you have a "Name" property, but then doesn't let you see what it is
-// in the structure itself (only via the datatable). Barring copying it across to another structure at import,
-// this means we need the Identifier separately but also a unique Name. It doesn't actually matter what the name is.
+// That's because UE *requires* that you have a "Name" property, but then doesn't let you see what
+// it is in the structure itself (only via the datatable). Barring copying it across to another
+// structure at import, this means we need the Identifier separately but also a unique Name. It
+// doesn't actually matter what the name is.
 
 const FString SimpleMainQuestJson = R"RAWJSON([
 	{

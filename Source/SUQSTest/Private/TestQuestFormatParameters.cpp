@@ -38,85 +38,83 @@ const FString QuestsWithParamsJson = R"RAWJSON([
 
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestFormatParams, "SUQSTest.QuestFormatParams",
-								 EAutomationTestFlags::EditorContext |
-								 EAutomationTestFlags::ClientContext |
-								 EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::EditorContext |
+                                     EAutomationTestFlags::ClientContext |
+                                     EAutomationTestFlags::ProductFilter)
 
-bool FTestQuestFormatParams::RunTest(const FString& Parameters)
-{
-	USuqsProgression* Progression = NewObject<USuqsProgression>();
-	Progression->InitWithQuestDataTables(
-		TArray<UDataTable*> {
-			USuqsProgression::MakeQuestDataTableFromJSON(QuestsWithParamsJson)
-		}
-	);
+bool FTestQuestFormatParams::RunTest(const FString& Parameters) {
+  USuqsProgression* Progression = NewObject<USuqsProgression>();
+  Progression->InitWithQuestDataTables(
+      TArray<UDataTable*>{USuqsProgression::MakeQuestDataTableFromJSON(QuestsWithParamsJson)});
 
-	auto Provider = NewObject<USuqsTestParamProvider>();
-	Provider->TextValue = LOCTEXT("Steve", "Steve");
-	Provider->IntValue = 12345;
-	Provider->Int64Value = -9223372036854775800;
-	Provider->FloatValue = 3.142f;
-	Provider->GenderValue = ETextGender::Feminine;
-	
-	Progression->AddParameterProvider(Provider);
+  auto Provider = NewObject<USuqsTestParamProvider>();
+  Provider->TextValue = LOCTEXT("Steve", "Steve");
+  Provider->IntValue = 12345;
+  Provider->Int64Value = -9223372036854775800;
+  Provider->FloatValue = 3.142f;
+  Provider->GenderValue = ETextGender::Feminine;
 
-	Progression->AcceptQuest("Q1");
-	auto Q1 = Progression->GetQuest("Q1");
-	FText QuestTitle = Q1->GetTitle();
-	FText QuestDesc = Q1->GetDescription();
-	
-	TestTrue("Quest Title should include params", QuestTitle.EqualTo(
-		LOCTEXT("Q1Title", "Meet Steve in 12,345 Days")));
-	TestTrue("Quest Description should include params", QuestDesc.EqualTo(
-		LOCTEXT("Q1Desc", "Remember that Steve's favourite number is -9,223,372,036,854,775,800 within 3.142")));
+  Progression->AddParameterProvider(Provider);
 
-	auto T1 = Q1->GetTask("T1Text");
-	FText TaskTitle = T1->GetTitle();
-	TestTrue("Task 1 Title should include params", TaskTitle.EqualTo(
-		LOCTEXT("T1Title", "Go to Steve and Steve")));
-	auto T2 = Q1->GetTask("T2Ints");
-	TaskTitle = T2->GetTitle();
-	TestTrue("Task 2 Title should include params", TaskTitle.EqualTo(
-		LOCTEXT("T2Title", "12,345 to -9,223,372,036,854,775,800")));
-	auto T3 = Q1->GetTask("T2FloatAndGender");
-	TaskTitle = T3->GetTitle();
-	TestTrue("Task 3 Title should include params", TaskTitle.EqualTo(
-		LOCTEXT("T2Title", "The number 3.142 is feminine")));
+  Progression->AcceptQuest("Q1");
+  auto Q1 = Progression->GetQuest("Q1");
+  FText QuestTitle = Q1->GetTitle();
+  FText QuestDesc = Q1->GetDescription();
 
-	return true;
+  TestTrue("Quest Title should include params",
+           QuestTitle.EqualTo(LOCTEXT("Q1Title", "Meet Steve in 12,345 Days")));
+  TestTrue(
+      "Quest Description should include params",
+      QuestDesc.EqualTo(LOCTEXT(
+          "Q1Desc",
+          "Remember that Steve's favourite number is -9,223,372,036,854,775,800 within 3.142")));
+
+  auto T1 = Q1->GetTask("T1Text");
+  FText TaskTitle = T1->GetTitle();
+  TestTrue("Task 1 Title should include params",
+           TaskTitle.EqualTo(LOCTEXT("T1Title", "Go to Steve and Steve")));
+  auto T2 = Q1->GetTask("T2Ints");
+  TaskTitle = T2->GetTitle();
+  TestTrue("Task 2 Title should include params",
+           TaskTitle.EqualTo(LOCTEXT("T2Title", "12,345 to -9,223,372,036,854,775,800")));
+  auto T3 = Q1->GetTask("T2FloatAndGender");
+  TaskTitle = T3->GetTitle();
+  TestTrue("Task 3 Title should include params",
+           TaskTitle.EqualTo(LOCTEXT("T2Title", "The number 3.142 is feminine")));
+
+  return true;
 }
 
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestNoParams, "SUQSTest.QuestNoParams",
-								 EAutomationTestFlags::EditorContext |
-								 EAutomationTestFlags::ClientContext |
-								 EAutomationTestFlags::ProductFilter)
+                                 EAutomationTestFlags::EditorContext |
+                                     EAutomationTestFlags::ClientContext |
+                                     EAutomationTestFlags::ProductFilter)
 
-bool FTestQuestNoParams::RunTest(const FString& Parameters)
-{
-	USuqsProgression* Progression = NewObject<USuqsProgression>();
-	Progression->InitWithQuestDataTables(
-		TArray<UDataTable*> {
-			USuqsProgression::MakeQuestDataTableFromJSON(SimpleMainQuestJson)
-		}
-	);
+bool FTestQuestNoParams::RunTest(const FString& Parameters) {
+  USuqsProgression* Progression = NewObject<USuqsProgression>();
+  Progression->InitWithQuestDataTables(
+      TArray<UDataTable*>{USuqsProgression::MakeQuestDataTableFromJSON(SimpleMainQuestJson)});
 
-	auto Provider = NewObject<USuqsTestParamProvider>();
-	
-	Progression->AddParameterProvider(Provider);
+  auto Provider = NewObject<USuqsTestParamProvider>();
 
-	Progression->AcceptQuest("Q_Main1");
-	auto Q = Progression->GetQuest("Q_Main1");
-	Provider->NumberOfTimesCalled = 0;
-	auto TestText = Q->GetTitle();
-	TestEqual("Should not have called parameter provider for quest title because no parameters", Provider->NumberOfTimesCalled, 0);
-	Provider->NumberOfTimesCalled = 0;
-	TestText = Q->GetDescription();
-	TestEqual("Should not have called parameter provider for quest description because no parameters", Provider->NumberOfTimesCalled, 0);
-	Provider->NumberOfTimesCalled = 0;
-	auto T = Q->GetTask("T_ReachThePlace");
-	TestText = T->GetTitle();
-	TestEqual("Should not have called parameter provider for task title because no parameters", Provider->NumberOfTimesCalled, 0);
-	
-	return true;
+  Progression->AddParameterProvider(Provider);
+
+  Progression->AcceptQuest("Q_Main1");
+  auto Q = Progression->GetQuest("Q_Main1");
+  Provider->NumberOfTimesCalled = 0;
+  auto TestText = Q->GetTitle();
+  TestEqual("Should not have called parameter provider for quest title because no parameters",
+            Provider->NumberOfTimesCalled, 0);
+  Provider->NumberOfTimesCalled = 0;
+  TestText = Q->GetDescription();
+  TestEqual("Should not have called parameter provider for quest description because no parameters",
+            Provider->NumberOfTimesCalled, 0);
+  Provider->NumberOfTimesCalled = 0;
+  auto T = Q->GetTask("T_ReachThePlace");
+  TestText = T->GetTitle();
+  TestEqual("Should not have called parameter provider for task title because no parameters",
+            Provider->NumberOfTimesCalled, 0);
+
+  return true;
 }

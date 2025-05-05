@@ -1,5 +1,5 @@
-#include "Misc/AutomationTest.h"
 #include "Engine.h"
+#include "Misc/AutomationTest.h"
 #include "SuqsProgression.h"
 
 
@@ -69,38 +69,39 @@ const FString SuccessDependentQuestJson = R"RAWJSON([
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestSuccessDependencies, "SUQSTest.QuestSuccessDependencies",
                                  EAutomationTestFlags::EditorContext |
-                                 EAutomationTestFlags::ClientContext |
-                                 EAutomationTestFlags::ProductFilter)
+                                     EAutomationTestFlags::ClientContext |
+                                     EAutomationTestFlags::ProductFilter)
 
-bool FTestQuestSuccessDependencies::RunTest(const FString& Parameters)
-{
-	USuqsProgression* Progression = NewObject<USuqsProgression>();
-	Progression->InitWithQuestDataTables(
-		TArray<UDataTable*> {
-			USuqsProgression::MakeQuestDataTableFromJSON(TriggerQuestsJson),
-			USuqsProgression::MakeQuestDataTableFromJSON(SuccessDependentQuestJson)
-		}
-	);
+bool FTestQuestSuccessDependencies::RunTest(const FString& Parameters) {
+  USuqsProgression* Progression = NewObject<USuqsProgression>();
+  Progression->InitWithQuestDataTables(
+      TArray<UDataTable*>{USuqsProgression::MakeQuestDataTableFromJSON(TriggerQuestsJson),
+                          USuqsProgression::MakeQuestDataTableFromJSON(SuccessDependentQuestJson)});
 
-	// Accept the 2 trigger quests
-	TestTrue("Accept quest OK", Progression->AcceptQuest("Q_TriggerQuest1"));
-	TestTrue("Accept quest OK", Progression->AcceptQuest("Q_TriggerQuest2"));
+  // Accept the 2 trigger quests
+  TestTrue("Accept quest OK", Progression->AcceptQuest("Q_TriggerQuest1"));
+  TestTrue("Accept quest OK", Progression->AcceptQuest("Q_TriggerQuest2"));
 
-	TestFalse("Dependent quest must not be accepted yet", Progression->IsQuestAccepted("Q_SuccessDeps"));
-	// complete one trigger quest
-	Progression->CompleteQuest("Q_TriggerQuest1");
-	TestFalse("Dependent quest must not be accepted yet", Progression->IsQuestAccepted("Q_SuccessDeps"));
-	// FAIL the other one
-	Progression->FailQuest("Q_TriggerQuest2");
-	TestFalse("Dependent quest must not be accepted yet", Progression->IsQuestAccepted("Q_SuccessDeps"));
-	// now reset second
-	Progression->ResetQuest("Q_TriggerQuest2");
-	TestFalse("Dependent quest must not be accepted yet", Progression->IsQuestAccepted("Q_SuccessDeps"));
-	// Complete the second, should trigger now
-	Progression->CompleteQuest("Q_TriggerQuest2");
-	TestTrue("Dependent quest should NOW be auto accepted", Progression->IsQuestAccepted("Q_SuccessDeps"));
+  TestFalse("Dependent quest must not be accepted yet",
+            Progression->IsQuestAccepted("Q_SuccessDeps"));
+  // complete one trigger quest
+  Progression->CompleteQuest("Q_TriggerQuest1");
+  TestFalse("Dependent quest must not be accepted yet",
+            Progression->IsQuestAccepted("Q_SuccessDeps"));
+  // FAIL the other one
+  Progression->FailQuest("Q_TriggerQuest2");
+  TestFalse("Dependent quest must not be accepted yet",
+            Progression->IsQuestAccepted("Q_SuccessDeps"));
+  // now reset second
+  Progression->ResetQuest("Q_TriggerQuest2");
+  TestFalse("Dependent quest must not be accepted yet",
+            Progression->IsQuestAccepted("Q_SuccessDeps"));
+  // Complete the second, should trigger now
+  Progression->CompleteQuest("Q_TriggerQuest2");
+  TestTrue("Dependent quest should NOW be auto accepted",
+           Progression->IsQuestAccepted("Q_SuccessDeps"));
 
-	return true;
+  return true;
 }
 
 const FString FailureDependentQuestJson = R"RAWJSON([
@@ -136,38 +137,39 @@ const FString FailureDependentQuestJson = R"RAWJSON([
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestFailureDependencies, "SUQSTest.QuestFailureDependencies",
                                  EAutomationTestFlags::EditorContext |
-                                 EAutomationTestFlags::ClientContext |
-                                 EAutomationTestFlags::ProductFilter)
+                                     EAutomationTestFlags::ClientContext |
+                                     EAutomationTestFlags::ProductFilter)
 
-bool FTestQuestFailureDependencies::RunTest(const FString& Parameters)
-{
-	USuqsProgression* Progression = NewObject<USuqsProgression>();
-	Progression->InitWithQuestDataTables(
-        TArray<UDataTable*> {
-        	USuqsProgression::MakeQuestDataTableFromJSON(TriggerQuestsJson),
-        	USuqsProgression::MakeQuestDataTableFromJSON(FailureDependentQuestJson)
-        }
-    );
+bool FTestQuestFailureDependencies::RunTest(const FString& Parameters) {
+  USuqsProgression* Progression = NewObject<USuqsProgression>();
+  Progression->InitWithQuestDataTables(
+      TArray<UDataTable*>{USuqsProgression::MakeQuestDataTableFromJSON(TriggerQuestsJson),
+                          USuqsProgression::MakeQuestDataTableFromJSON(FailureDependentQuestJson)});
 
-	// Accept the 2 trigger quests
-	TestTrue("Accept quest OK", Progression->AcceptQuest("Q_TriggerQuest1"));
-	TestTrue("Accept quest OK", Progression->AcceptQuest("Q_TriggerQuest2"));
+  // Accept the 2 trigger quests
+  TestTrue("Accept quest OK", Progression->AcceptQuest("Q_TriggerQuest1"));
+  TestTrue("Accept quest OK", Progression->AcceptQuest("Q_TriggerQuest2"));
 
-	TestFalse("Dependent quest must not be accepted yet", Progression->IsQuestAccepted("Q_FailureDeps"));
-	// complete one trigger quest
-	Progression->CompleteQuest("Q_TriggerQuest1");
-	TestFalse("Dependent quest must not be accepted yet", Progression->IsQuestAccepted("Q_FailureDeps"));
-	// fail the other one
-	Progression->FailQuest("Q_TriggerQuest2");
-	TestFalse("Dependent quest must not be accepted yet", Progression->IsQuestAccepted("Q_FailureDeps"));
-	// now reset first
-	Progression->ResetQuest("Q_TriggerQuest1");
-	TestFalse("Dependent quest must not be accepted yet", Progression->IsQuestAccepted("Q_FailureDeps"));
-	// Fail the second, should trigger now
-	Progression->FailQuest("Q_TriggerQuest1");
-	TestTrue("Dependent quest should NOW be auto accepted", Progression->IsQuestAccepted("Q_FailureDeps"));
+  TestFalse("Dependent quest must not be accepted yet",
+            Progression->IsQuestAccepted("Q_FailureDeps"));
+  // complete one trigger quest
+  Progression->CompleteQuest("Q_TriggerQuest1");
+  TestFalse("Dependent quest must not be accepted yet",
+            Progression->IsQuestAccepted("Q_FailureDeps"));
+  // fail the other one
+  Progression->FailQuest("Q_TriggerQuest2");
+  TestFalse("Dependent quest must not be accepted yet",
+            Progression->IsQuestAccepted("Q_FailureDeps"));
+  // now reset first
+  Progression->ResetQuest("Q_TriggerQuest1");
+  TestFalse("Dependent quest must not be accepted yet",
+            Progression->IsQuestAccepted("Q_FailureDeps"));
+  // Fail the second, should trigger now
+  Progression->FailQuest("Q_TriggerQuest1");
+  TestTrue("Dependent quest should NOW be auto accepted",
+           Progression->IsQuestAccepted("Q_FailureDeps"));
 
-	return true;
+  return true;
 }
 
 const FString MixedDependentQuestJson = R"RAWJSON([
@@ -203,30 +205,29 @@ const FString MixedDependentQuestJson = R"RAWJSON([
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestQuestMixedDependencies, "SUQSTest.QuestMixedDependencies",
                                  EAutomationTestFlags::EditorContext |
-                                 EAutomationTestFlags::ClientContext |
-                                 EAutomationTestFlags::ProductFilter)
+                                     EAutomationTestFlags::ClientContext |
+                                     EAutomationTestFlags::ProductFilter)
 
-bool FTestQuestMixedDependencies::RunTest(const FString& Parameters)
-{
-	USuqsProgression* Progression = NewObject<USuqsProgression>();
-	Progression->InitWithQuestDataTables(
-		TArray<UDataTable*>{
-			USuqsProgression::MakeQuestDataTableFromJSON(TriggerQuestsJson),
-			USuqsProgression::MakeQuestDataTableFromJSON(MixedDependentQuestJson)
-		}
-	);
+bool FTestQuestMixedDependencies::RunTest(const FString& Parameters) {
+  USuqsProgression* Progression = NewObject<USuqsProgression>();
+  Progression->InitWithQuestDataTables(
+      TArray<UDataTable*>{USuqsProgression::MakeQuestDataTableFromJSON(TriggerQuestsJson),
+                          USuqsProgression::MakeQuestDataTableFromJSON(MixedDependentQuestJson)});
 
-	// Accept the 2 trigger quests
-	TestTrue("Accept quest OK", Progression->AcceptQuest("Q_TriggerQuest1"));
-	TestTrue("Accept quest OK", Progression->AcceptQuest("Q_TriggerQuest2"));
+  // Accept the 2 trigger quests
+  TestTrue("Accept quest OK", Progression->AcceptQuest("Q_TriggerQuest1"));
+  TestTrue("Accept quest OK", Progression->AcceptQuest("Q_TriggerQuest2"));
 
-	TestFalse("Dependent quest must not be accepted yet", Progression->IsQuestAccepted("Q_MixedDeps"));
-	// complete one trigger quest
-	Progression->CompleteQuest("Q_TriggerQuest2");
-	TestFalse("Dependent quest must not be accepted yet", Progression->IsQuestAccepted("Q_MixedDeps"));
-	// fail the other one, should trigger as we need mixed results
-	Progression->FailQuest("Q_TriggerQuest1");
-	TestTrue("Dependent quest should NOW be auto accepted", Progression->IsQuestAccepted("Q_MixedDeps"));
+  TestFalse("Dependent quest must not be accepted yet",
+            Progression->IsQuestAccepted("Q_MixedDeps"));
+  // complete one trigger quest
+  Progression->CompleteQuest("Q_TriggerQuest2");
+  TestFalse("Dependent quest must not be accepted yet",
+            Progression->IsQuestAccepted("Q_MixedDeps"));
+  // fail the other one, should trigger as we need mixed results
+  Progression->FailQuest("Q_TriggerQuest1");
+  TestTrue("Dependent quest should NOW be auto accepted",
+           Progression->IsQuestAccepted("Q_MixedDeps"));
 
-	return true;
+  return true;
 }
